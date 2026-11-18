@@ -22,6 +22,8 @@ h1 {
   padding: 1rem;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: black;
+  text-decoration: none;
 }
 
 .carte img {
@@ -31,4 +33,43 @@ h1 {
 
 .carte h2 {
   text-transform: capitalize;
+}
+
+.fiche {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 1.5rem auto;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.fiche img {
+  width: 300px;
+}
+
+.fiche h1 {
+  text-align: left;
+  margin-top: 0;
+}
+
+.types {
+  padding: 0;
+}
+
+.types li {
+  display: inline-block;
+  background: #e3350d;
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.erreur {
+  text-align: center;
+  margin-top: 4rem;
 }
