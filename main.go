@@ -70,9 +70,21 @@ type Espece struct {
 	EvolutionChain Adresse            `json:"evolution_chain"`
 }
 
+type LienEspece struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
+// Numero lit le numéro au bout de l'adresse :
+// ".../pokemon-species/2/" donne "2".
+func (l LienEspece) Numero() string {
+	numero := strings.TrimPrefix(l.URL, "https://pokeapi.co/api/v2/pokemon-species/")
+	return strings.TrimSuffix(numero, "/")
+}
+
 type Maillon struct {
-	Species   Nom       `json:"species"`
-	EvolvesTo []Maillon `json:"evolves_to"`
+	Species   LienEspece `json:"species"`
+	EvolvesTo []Maillon  `json:"evolves_to"`
 }
 
 type ChaineEvolution struct {
@@ -88,6 +100,8 @@ type PagePokemon struct {
 	Categorie   string
 	Description string
 	Evolutions  Maillon
+	Precedent   int
+	Suivant     int
 }
 
 var client = &http.Client{Timeout: 5 * time.Second}
@@ -218,6 +232,8 @@ func fiche(w http.ResponseWriter, r *http.Request) {
 		Categorie:   categorieFrancaise(espece),
 		Description: descriptionFrancaise(espece),
 		Evolutions:  chaine.Chain,
+		Precedent:   pokemon.ID - 1,
+		Suivant:     pokemon.ID + 1,
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/fiche.html"))

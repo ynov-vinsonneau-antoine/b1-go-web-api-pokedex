@@ -1,83 +1,434 @@
-body {
-  font-family: sans-serif;
-  background: #f4f4f8;
-  margin: 0;
-  padding: 2rem;
+/* ========== Les couleurs ========== */
+
+:root {
+  --rouge: #e3350d;
+  --rouge-fonce: #b42a0a;
+  --fond: #f2f3f7;
+  --carte: #ffffff;
+  --texte: #1d1d27;
+  --gris: #5f6373;
+  --bordure: #e3e5ec;
+  --ombre: 0 4px 16px rgba(20, 20, 40, 0.08);
 }
 
-h1 {
-  text-align: center;
-  color: #e3350d;
+/* ========== La page ========== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+}
+
+a {
+  color: inherit;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+/* ========== L'en-tête rouge ========== */
+
+.entete {
+  background: var(--rouge);
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* La Poké Ball, dessinée en CSS */
+.logo::before {
+  content: "";
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid #1d1d27;
+  background:
+    radial-gradient(circle, white 0 4px, #1d1d27 4px 7px, transparent 7px),
+    linear-gradient(to bottom, white 0 45%, #1d1d27 45% 55%, white 55%);
+}
+
+/* ========== L'accueil ========== */
+
+.compteur {
+  color: var(--gris);
+  font-weight: 600;
+  margin: 0 0 1.5rem;
 }
 
 .grille {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.25rem;
 }
 
 .carte {
-  background: white;
-  border-radius: 12px;
+  background: var(--carte);
+  border-radius: 16px;
   padding: 1rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  color: black;
   text-decoration: none;
+  box-shadow: var(--ombre);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.carte:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(20, 20, 40, 0.15);
 }
 
 .carte img {
-  width: 120px;
+  width: 110px;
+  height: 110px;
+  background: var(--fond);
+  border-radius: 50%;
   image-rendering: pixelated;
 }
 
 .carte h2 {
+  margin: 0.25rem 0 0;
+  font-size: 1.1rem;
   text-transform: capitalize;
+}
+
+.numero {
+  margin: 0.5rem 0 0;
+  color: var(--gris);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ========== La fiche ========== */
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.navigation a {
+  background: var(--carte);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--ombre);
+}
+
+.navigation a:hover {
+  background: var(--rouge);
+  color: white;
 }
 
 .fiche {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
   gap: 2rem;
-  max-width: 800px;
-  margin: 1.5rem auto;
-  background: white;
-  border-radius: 12px;
+  align-items: center;
+  background: var(--carte);
+  border-radius: 24px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--ombre);
 }
 
-.fiche img {
-  width: 300px;
+.fiche-image {
+  background: radial-gradient(circle, #ffffff 0%, var(--fond) 70%);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fiche-image img {
+  width: 85%;
 }
 
 .fiche h1 {
-  text-align: left;
-  margin-top: 0;
+  margin: 0.25rem 0;
+  font-size: 2.6rem;
 }
 
-.types {
-  padding: 0;
+.categorie {
+  margin: 0 0 1rem;
+  color: var(--gris);
 }
 
-.types li {
-  display: inline-block;
-  background: #e3350d;
-  color: white;
-  padding: 0.3rem 1rem;
-  border-radius: 20px;
-  text-transform: capitalize;
+.description {
+  line-height: 1.6;
 }
 
 .badge {
   display: inline-block;
   background: #ffcb05;
-  padding: 0.3rem 1rem;
-  border-radius: 20px;
-  font-weight: bold;
+  color: #1d1d27;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
+.mesures {
+  display: flex;
+  gap: 1rem;
+}
+
+.mesures div {
+  flex: 1;
+  background: var(--fond);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.mesures span {
+  display: block;
+  color: var(--gris);
+  font-size: 0.85rem;
+}
+
+.mesures b {
+  font-size: 1.3rem;
+}
+
+/* ========== Les blocs (talents, stats, évolutions) ========== */
+
+.colonnes {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 0 1.5rem;
+}
+
+.bloc {
+  background: var(--carte);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  margin-top: 1.5rem;
+  box-shadow: var(--ombre);
+}
+
+.bloc h2 {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+
+.talents,
+.stats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.talents li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--bordure);
+  text-transform: capitalize;
+}
+
+.talents li:last-child {
+  border-bottom: none;
+}
+
+.cache {
+  margin-left: 0.5rem;
+  background: var(--texte);
+  color: white;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: none;
+}
+
+.stats li {
+  display: grid;
+  grid-template-columns: 130px 40px 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+}
+
+.stat-nom {
+  color: var(--gris);
+  text-transform: capitalize;
+}
+
+.barre {
+  max-width: 255px;
+  height: 10px;
+  background: var(--fond);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barre div {
+  height: 100%;
+  background: linear-gradient(to right, #ffcb05, var(--rouge));
+  border-radius: 999px;
+}
+
+/* ========== Les évolutions ========== */
+
+.evolutions,
+.branche {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.branches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* 2 évolutions possibles à la 3e étape : l'une sous l'autre */
+.branche .branches {
+  flex-direction: column;
+}
+
+.evolution {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 110px;
+  padding: 0.5rem;
+  border-radius: 16px;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.evolution:hover {
+  background: var(--fond);
+}
+
+.evolution img {
+  width: 90px;
+  height: 90px;
+  image-rendering: pixelated;
+}
+
+.fleche {
+  font-size: 1.5rem;
+  color: var(--gris);
+}
+
+/* ========== Les types ========== */
+
+.types {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.type {
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  color: white;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: #777;
+}
+
+.normal   { background: #9fa19f; }
+.fire     { background: #e62829; }
+.water    { background: #2980ef; }
+.grass    { background: #3fa129; }
+.electric { background: #e3b000; }
+.ice      { background: #3dbfdf; }
+.fighting { background: #ff8000; }
+.poison   { background: #9141cb; }
+.ground   { background: #915121; }
+.flying   { background: #6b8fd6; }
+.psychic  { background: #ef4179; }
+.bug      { background: #91a119; }
+.rock     { background: #a59d72; }
+.ghost    { background: #704170; }
+.dragon   { background: #5060e1; }
+.dark     { background: #50413f; }
+.steel    { background: #60a1b8; }
+.fairy    { background: #ef70ef; }
+
+/* ========== La page d'erreur ========== */
+
 .erreur {
+  max-width: 480px;
+  margin: 3rem auto;
   text-align: center;
-  margin-top: 4rem;
+  background: var(--carte);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: var(--ombre);
+}
+
+.erreur h1 {
+  margin-top: 0;
+  color: var(--rouge);
+  font-size: 2.5rem;
+}
+
+.bouton {
+  display: inline-block;
+  margin-top: 1rem;
+  background: var(--rouge);
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.bouton:hover {
+  background: var(--rouge-fonce);
+}
+
+/* ========== Sur téléphone ========== */
+
+@media (max-width: 700px) {
+  .fiche,
+  .colonnes {
+    grid-template-columns: 1fr;
+  }
+
+  .fiche h1 {
+    font-size: 2rem;
+  }
+
+  .stats li {
+    grid-template-columns: 110px 36px 1fr;
+  }
+
+  /* Les évolutions de haut en bas */
+  .evolutions,
+  .branche {
+    flex-direction: column;
+  }
+
+  .fleche {
+    transform: rotate(90deg);
+  }
+
+  .branches,
+  .branche .branches {
+    flex-direction: row;
+    justify-content: center;
+  }
 }

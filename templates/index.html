@@ -2,20 +2,27 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pokédex</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Pokédex</h1>
+  <header class="entete">
+    <a class="logo" href="/">Pokédex</a>
+  </header>
 
-  <div class="grille">
-    {{range .}}
-      <a class="carte" href="/pokemon/{{.ID}}">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.ID}}.png" alt="{{.Name}}">
-        <p>n° {{.ID}}</p>
-        <h2>{{.Name}}</h2>
-      </a>
-    {{end}}
-  </div>
+  <main class="page">
+    <p class="compteur">{{len .}} Pokémon</p>
+
+    <div class="grille">
+      {{range .}}
+        <a class="carte" href="/pokemon/{{.ID}}">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.ID}}.png" alt="{{.Name}}">
+          <p class="numero">n° {{printf "%03d" .ID}}</p>
+          <h2>{{.Name}}</h2>
+        </a>
+      {{end}}
+    </div>
+  </main>
 </body>
 </html>
