@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -17,10 +18,24 @@ type Type struct {
 	Type Nom `json:"type"`
 }
 
+type Talent struct {
+	Ability  Nom  `json:"ability"`
+	IsHidden bool `json:"is_hidden"`
+}
+
+type Stat struct {
+	BaseStat int `json:"base_stat"`
+	Stat     Nom `json:"stat"`
+}
+
 type Pokemon struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Types []Type `json:"types"`
+	ID        int      `json:"id"`
+	Name      string   `json:"name"`
+	Types     []Type   `json:"types"`
+	Abilities []Talent `json:"abilities"`
+	Height    int      `json:"height"`
+	Weight    int      `json:"weight"`
+	Stats     []Stat   `json:"stats"`
 }
 
 type ListePokemon struct {
@@ -32,13 +47,47 @@ type Traduction struct {
 	Language Nom    `json:"language"`
 }
 
+type Categorie struct {
+	Genus    string `json:"genus"`
+	Language Nom    `json:"language"`
+}
+
+type TexteDescription struct {
+	FlavorText string `json:"flavor_text"`
+	Language   Nom    `json:"language"`
+}
+
+type Adresse struct {
+	URL string `json:"url"`
+}
+
 type Espece struct {
-	Names []Traduction `json:"names"`
+	Names          []Traduction       `json:"names"`
+	Genera         []Categorie        `json:"genera"`
+	FlavorTexts    []TexteDescription `json:"flavor_text_entries"`
+	IsLegendary    bool               `json:"is_legendary"`
+	IsMythical     bool               `json:"is_mythical"`
+	EvolutionChain Adresse            `json:"evolution_chain"`
+}
+
+type Maillon struct {
+	Species   Nom       `json:"species"`
+	EvolvesTo []Maillon `json:"evolves_to"`
+}
+
+type ChaineEvolution struct {
+	Chain Maillon `json:"chain"`
 }
 
 type PagePokemon struct {
-	Pokemon Pokemon
-	NomFr   string
+	Pokemon     Pokemon
+	NomFr       string
+	Taille      float64
+	Poids       float64
+	Espece      Espece
+	Categorie   string
+	Description string
+	Evolutions  Maillon
 }
 
 var client = &http.Client{Timeout: 5 * time.Second}
@@ -78,6 +127,31 @@ func getEspece(id string) (Espece, error) {
 	var espece Espece
 	err := appelerAPI("pokemon-species/"+id, &espece)
 	return espece, err
+}
+
+func getEvolutions(espece Espece) (ChaineEvolution, error) {
+	var chaine ChaineEvolution
+	adresse := strings.TrimPrefix(espece.EvolutionChain.URL, "https://pokeapi.co/api/v2/")
+	err := appelerAPI(adresse, &chaine)
+	return chaine, err
+}
+
+func categorieFrancaise(espece Espece) string {
+	for _, c := range espece.Genera {
+		if c.Language.Name == "fr" {
+			return c.Genus
+		}
+	}
+	return ""
+}
+
+func descriptionFrancaise(espece Espece) string {
+	for _, d := range espece.FlavorTexts {
+		if d.Language.Name == "fr" {
+			return d.FlavorText
+		}
+	}
+	return ""
 }
 
 func nomFrancais(espece Espece) string {
@@ -129,9 +203,21 @@ func fiche(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	chaine, err := getEvolutions(espece)
+	if err != nil {
+		apiEnPanne(w, err)
+		return
+	}
+
 	page := PagePokemon{
-		Pokemon: pokemon,
-		NomFr:   nomFrancais(espece),
+		Pokemon:     pokemon,
+		NomFr:       nomFrancais(espece),
+		Taille:      float64(pokemon.Height) / 10,
+		Poids:       float64(pokemon.Weight) / 10,
+		Espece:      espece,
+		Categorie:   categorieFrancaise(espece),
+		Description: descriptionFrancaise(espece),
+		Evolutions:  chaine.Chain,
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/fiche.html"))

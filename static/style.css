@@ -37,7 +37,7 @@ h1 {
 
 .fiche {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 2rem;
   max-width: 800px;
   margin: 1.5rem auto;
@@ -67,6 +67,14 @@ h1 {
   padding: 0.3rem 1rem;
   border-radius: 20px;
   text-transform: capitalize;
+}
+
+.badge {
+  display: inline-block;
+  background: #ffcb05;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
 }
 
 .erreur {

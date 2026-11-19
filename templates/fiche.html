@@ -12,6 +12,10 @@
     <div>
       <p>n° {{.Pokemon.ID}}</p>
       <h1>{{.NomFr}}</h1>
+      <p>{{.Categorie}}</p>
+      {{if .Espece.IsLegendary}}<span class="badge">Légendaire</span>{{end}}
+      {{if .Espece.IsMythical}}<span class="badge">Fabuleux</span>{{end}}
+      <p>{{.Description}}</p>
       <p>En anglais : {{.Pokemon.Name}}</p>
 
       <h2>Types</h2>
@@ -19,6 +23,41 @@
         {{range .Pokemon.Types}}
           <li>{{.Type.Name}}</li>
         {{end}}
+      </ul>
+
+      <p>Taille : {{.Taille}} m · Poids : {{.Poids}} kg</p>
+
+      <h2>Talents</h2>
+      <ul>
+        {{range .Pokemon.Abilities}}
+          <li>{{.Ability.Name}}{{if .IsHidden}} (caché){{end}}</li>
+        {{end}}
+      </ul>
+
+      <h2>Statistiques</h2>
+      <ul>
+        {{range .Pokemon.Stats}}
+          <li>{{.Stat.Name}} : {{.BaseStat}}</li>
+        {{end}}
+      </ul>
+
+      <h2>Évolutions</h2>
+      <ul>
+        <li>
+          <a href="/pokemon/{{.Evolutions.Species.Name}}">{{.Evolutions.Species.Name}}</a>
+          <ul>
+            {{range .Evolutions.EvolvesTo}}
+              <li>
+                <a href="/pokemon/{{.Species.Name}}">{{.Species.Name}}</a>
+                <ul>
+                  {{range .EvolvesTo}}
+                    <li><a href="/pokemon/{{.Species.Name}}">{{.Species.Name}}</a></li>
+                  {{end}}
+                </ul>
+              </li>
+            {{end}}
+          </ul>
+        </li>
       </ul>
     </div>
   </div>
