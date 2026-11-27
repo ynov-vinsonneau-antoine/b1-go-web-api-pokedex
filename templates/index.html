@@ -12,15 +12,32 @@
   </header>
 
   <main class="page">
-    <p class="compteur">{{len .}} Pokémon</p>
+    <form class="recherche" action="/">
+      <input type="text" name="q" placeholder="Nom du Pokémon" value="{{.Recherche}}">
+      <button>Rechercher</button>
+    </form>
+
+    <nav class="filtres">
+      <a class="type" href="/">Tous</a>
+      {{range .Types}}
+        <a class="type {{.}}" href="/?type={{.}}">{{.}}</a>
+      {{end}}
+    </nav>
+
+    <p class="compteur">
+      {{len .Pokemons}} Pokémon
+      {{if .Type}}de type {{.Type}}{{end}}
+    </p>
 
     <div class="grille">
-      {{range .}}
+      {{range .Pokemons}}
         <a class="carte" href="/pokemon/{{.ID}}">
           <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{.ID}}.png" alt="{{.Name}}">
           <p class="numero">n° {{printf "%03d" .ID}}</p>
           <h2>{{.Name}}</h2>
         </a>
+      {{else}}
+        <p>Aucun Pokémon trouvé.</p>
       {{end}}
     </div>
   </main>

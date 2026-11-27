@@ -104,6 +104,25 @@ type PagePokemon struct {
 	Suivant     int
 }
 
+type Membre struct {
+	Pokemon Nom `json:"pokemon"`
+}
+
+type PokemonsDuType struct {
+	Pokemon []Membre `json:"pokemon"`
+}
+
+type PageAccueil struct {
+	Recherche string
+	Type      string
+	Types     []string
+	Pokemons  []Pokemon
+}
+
+var tousLesTypes = []string{"normal", "fire", "water", "grass",
+	"electric", "ice", "fighting", "poison", "ground", "flying",
+	"psychic", "bug", "rock", "ghost", "dragon", "steel", "fairy"}
+
 var client = &http.Client{Timeout: 5 * time.Second}
 
 func appelerAPI(adresse string, resultat any) error {
@@ -150,6 +169,12 @@ func getEvolutions(espece Espece) (ChaineEvolution, error) {
 	return chaine, err
 }
 
+func getType(nom string) (PokemonsDuType, error) {
+	var leType PokemonsDuType
+	err := appelerAPI("type/"+nom, &leType)
+	return leType, err
+}
+
 func categorieFrancaise(espece Espece) string {
 	for _, c := range espece.Genera {
 		if c.Language.Name == "fr" {
@@ -188,6 +213,28 @@ func apiEnPanne(w http.ResponseWriter, err error) {
 	erreur(w, 500, "Le Pokédex ne répond pas. Réessayez plus tard.")
 }
 
+func rechercher(pokemons []Pokemon, recherche string) []Pokemon {
+	var resultat []Pokemon
+	for _, pokemon := range pokemons {
+		if strings.Contains(pokemon.Name, strings.ToLower(recherche)) {
+			resultat = append(resultat, pokemon)
+		}
+	}
+	return resultat
+}
+
+func filtrerParType(pokemons []Pokemon, leType PokemonsDuType) []Pokemon {
+	var resultat []Pokemon
+	for _, pokemon := range pokemons {
+		for _, membre := range leType.Pokemon {
+			if membre.Pokemon.Name == pokemon.Name {
+				resultat = append(resultat, pokemon)
+			}
+		}
+	}
+	return resultat
+}
+
 func accueil(w http.ResponseWriter, r *http.Request) {
 	pokemons, err := getPokemons()
 	if err != nil {
@@ -195,8 +242,30 @@ func accueil(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	recherche := r.URL.Query().Get("q")
+	if recherche != "" {
+		pokemons = rechercher(pokemons, recherche)
+	}
+
+	nomType := r.URL.Query().Get("type")
+	if nomType != "" {
+		leType, err := getType(nomType)
+		if err != nil {
+			apiEnPanne(w, err)
+			return
+		}
+		pokemons = filtrerParType(pokemons, leType)
+	}
+
+	page := PageAccueil{
+		Recherche: recherche,
+		Type:      nomType,
+		Types:     tousLesTypes,
+		Pokemons:  pokemons,
+	}
+
 	tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	tmpl.Execute(w, pokemons)
+	tmpl.Execute(w, page)
 }
 
 func fiche(w http.ResponseWriter, r *http.Request) {

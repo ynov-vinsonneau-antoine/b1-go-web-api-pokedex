@@ -37,7 +37,7 @@
 
         <ul class="types">
           {{range .Pokemon.Types}}
-            <li class="type {{.Type.Name}}">{{.Type.Name}}</li>
+            <li><a class="type {{.Type.Name}}" href="/?type={{.Type.Name}}">{{.Type.Name}}</a></li>
           {{end}}
         </ul>
 
@@ -71,17 +71,7 @@
 
       <section class="bloc">
         <h2>Statistiques</h2>
-        <ul class="stats">
-          {{range .Pokemon.Stats}}
-            <li>
-              <span class="stat-nom">{{.Stat.Name}}</span>
-              <b>{{.BaseStat}}</b>
-              <div class="barre">
-                <div style="width: {{.BaseStat}}px"></div>
-              </div>
-            </li>
-          {{end}}
-        </ul>
+        <canvas id="graphique"></canvas>
       </section>
     </div>
 
@@ -114,6 +104,25 @@
       </div>
     </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    new Chart(document.getElementById("graphique"), {
+      type: "radar",
+      data: {
+        labels: [{{range .Pokemon.Stats}}{{.Stat.Name}}, {{end}}],
+        datasets: [{
+          label: {{.NomFr}},
+          data: [{{range .Pokemon.Stats}}{{.BaseStat}}, {{end}}],
+          backgroundColor: "rgba(227, 53, 13, 0.25)",
+          borderColor: "#e3350d"
+        }]
+      },
+      options: {
+        scales: { r: { beginAtZero: true } }
+      }
+    });
+  </script>
 </body>
 </html>
 
